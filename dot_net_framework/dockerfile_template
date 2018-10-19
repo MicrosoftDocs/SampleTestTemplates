@@ -1,0 +1,10 @@
+﻿FROM microsoft/dotnet-framework:4.7.2-sdk
+WORKDIR /app
+COPY dot_net_framework/startup.ps1 .
+COPY dot_net_framework/checkout.ps1 .
+RUN ["powershell", "-File", "startup.ps1"]
+RUN ["powershell", "-File", "checkout.ps1", "-repo_path", "{0}", "-commit", "{1}"]
+WORKDIR repo
+{2}
+RUN dir
+RUN msbuild

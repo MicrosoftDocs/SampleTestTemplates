@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/powershell:latest
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
+
+RUN apt-get install -y git 
+
+WORKDIR /usr/src
+
+RUN git clone {0} --verbose repo
+WORKDIR /usr/src/repo
+
+RUN git reset --hard {1}
+{2}
+
+COPY nodejs/Check-NodeJSScript.ps1 /usr/src
+
+ENTRYPOINT ["pwsh", "-File", "/usr/src/Check-NodeJSScript.ps1"]

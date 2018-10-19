@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/powershell
+
+RUN apt-get update
+RUN apt-get install -y git
+WORKDIR /usr/src
+RUN git clone {0} --verbose repo
+WORKDIR repo
+RUN git reset --hard {1}
+{2}
+
+COPY powershell/Check-PSScript.ps1 /usr/src
+
+ENTRYPOINT ["pwsh", "-File", "/usr/src/Check-PSScript.ps1"]
+
+

@@ -1,0 +1,10 @@
+FROM python:3
+WORKDIR /usr/src
+RUN git clone {0} --verbose repo
+WORKDIR ./repo
+RUN git reset --hard {1}
+{2}
+COPY python_3/check-python-script.py /usr/src
+RUN pip install --upgrade pip
+RUN pip install pystrich
+ENTRYPOINT [ "python", "/usr/src/check-python-script.py" ]

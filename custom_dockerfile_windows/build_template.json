@@ -1,0 +1,279 @@
+{
+	"options": [{
+			"enabled": false,
+			"definition": {
+				"id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
+			},
+			"inputs": {
+				"branchFilters": "[\"+refs/heads/*\"]",
+				"additionalFields": "{}"
+			}
+		}, {
+			"enabled": false,
+			"definition": {
+				"id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+			},
+			"inputs": {
+				"workItemType": "1421774",
+				"assignToRequestor": "true",
+				"additionalFields": "{}"
+			}
+		}
+	],
+	"variables": {
+		"Branch": {
+			"value": "master"
+		},
+		"BuildConfiguration": {
+			"value": "release",
+			"allowOverride": true
+		},
+		"BuildPlatform": {
+			"value": "any cpu",
+			"allowOverride": true
+		},
+		"CommitId": {
+			"value": "0a6e2909ba82482a6b49465e7d5aa573e5da0bc4 ",
+			"allowOverride": true
+		},
+		"DockerFile": {
+			"value": "CustomDockerfile/dockerfile"
+		},
+		"GitRepo": {
+			"value": "mpMelnikov/TestRepository2"
+		},
+		"SolutionPath": {
+			"value": "CustomDockerfile"
+		}
+	},
+	"properties": {},
+	"tags": [],
+	"_links": {
+		"self": {
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/742?revision=20"
+		},
+		"web": {
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/definition?definitionId=742"
+		},
+		"editor": {
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/designer?id=742&_a=edit-build-definition"
+		},
+		"badge": {
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/status/742"
+		}
+	},
+	"jobAuthorizationScope": 1,
+	"jobCancelTimeoutInMinutes": 5,
+	"process": {
+		"phases": [{
+				"steps": [{
+						"environment": {},
+						"enabled": true,
+						"continueOnError": false,
+						"alwaysRun": false,
+						"displayName": "Azure Key Vault: keyvault20181008",
+						"timeoutInMinutes": 0,
+						"condition": "succeeded()",
+						"task": {
+							"id": "1e244d32-2dd4-4165-96fb-b7441ca9331e",
+							"versionSpec": "1.*",
+							"definitionType": "task"
+						},
+						"inputs": {
+							"ConnectedServiceName": "335cd451-13b6-4ac2-b619-d9009258cd22",
+							"KeyVaultName": "keyvault20181008",
+							"SecretsFilter": "github-personal-access-token"
+						}
+					}, {
+						"environment": {},
+						"enabled": true,
+						"continueOnError": false,
+						"alwaysRun": false,
+						"displayName": "Get Dockerfile and Substitute Variables",
+						"timeoutInMinutes": 0,
+						"condition": "succeeded()",
+						"task": {
+							"id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+							"versionSpec": "2.*",
+							"definitionType": "task"
+						},
+						"inputs": {
+							"targetType": "inline",
+							"filePath": "",
+							"arguments": "",
+							"script": "$output = \"Dockerfile\"\n$gitRepoUrl = \"https://github.com/$(GitRepo).git\"\n$trimmedSolutionPath = \"$(SolutionPath)\".TrimStart(\"/\")\n$workdirCommand = \"\"\nif ($trimmedSolutionPath)\n{\n    $workdirCommand = \"WORKDIR \" + $trimmedSolutionPath\n}\n\n[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12\n$token = [System.Text.Encoding]::UTF8.GetBytes(\"$(github-personal-access-token)\"+ \":\")\n$base64 = [System.Convert]::ToBase64String($token)\n$basicAuth = [string]::Format(\"Basic {0}\", $base64)\n$headers = @{ Authorization = $basicAuth }\n$url = \"https://api.github.com/repos/$(GitRepo)/commits/$(Branch)\"\n$response= Invoke-RestMethod -Uri $url -Headers $headers\n$commit = $response.sha\n\n$url = \"https://api.github.com/repos/$(GitRepo)/contents/$(DockerFile)?ref=$(Branch)\"\nWrite-Host($url)\n$response= Invoke-RestMethod -Uri $url -Headers $headers\n$dockerfileContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($response.content))\n\n$dockerfileContent = $dockerfileContent.Replace(\"`$REPO_URL\", \"$gitRepoUrl\")\n$dockerfileContent = $dockerfileContent.Replace(\"`$COMMIT_ID\", \"$commit\")\n$dockerfileContent = $dockerfileContent.Replace(\"`$WORKDIR_SAMPLE_LOCATION\", \"$workdirCommand\")\n$dockerfileContent = $dockerfileContent.Replace(\"`$SAMPLE_LOCATION\", \"$trimmedSolutionPath\")\n\n$dockerfileContent | Out-File -filepath $output -Encoding UTF8\n",
+							"errorActionPreference": "stop",
+							"failOnStderr": "false",
+							"ignoreLASTEXITCODE": "false",
+							"pwsh": "false",
+							"workingDirectory": ""
+						}
+					}, {
+						"environment": {},
+						"enabled": true,
+						"continueOnError": false,
+						"alwaysRun": false,
+						"displayName": "Build an image",
+						"timeoutInMinutes": 0,
+						"condition": "succeeded()",
+						"task": {
+							"id": "e28912f1-0114-4464-802a-a3a35437fd16",
+							"versionSpec": "0.*",
+							"definitionType": "task"
+						},
+						"inputs": {
+							"containerregistrytype": "Azure Container Registry",
+							"dockerRegistryEndpoint": "",
+							"azureSubscriptionEndpoint": "",
+							"azureContainerRegistry": "",
+							"action": "Build an image",
+							"dockerFile": "Dockerfile",
+							"buildArguments": "",
+							"defaultContext": "true",
+							"context": "",
+							"imageName": "$(Build.Repository.Name):$(Build.BuildId)",
+							"imageNamesPath": "",
+							"qualifyImageName": "true",
+							"additionalImageTags": "",
+							"includeSourceTags": "false",
+							"includeLatestTag": "false",
+							"imageDigestFile": "",
+							"containerName": "",
+							"ports": "",
+							"volumes": "",
+							"envVars": "",
+							"workDir": "",
+							"entrypoint": "",
+							"containerCommand": "",
+							"detached": "true",
+							"restartPolicy": "no",
+							"restartMaxRetries": "",
+							"customCommand": "",
+							"dockerHostEndpoint": "",
+							"enforceDockerNamingConvention": "true",
+							"cwd": "",
+							"memory": ""
+						}
+					}, {
+						"environment": {},
+						"enabled": true,
+						"continueOnError": false,
+						"alwaysRun": true,
+						"displayName": "Publish Artifact: drop",
+						"timeoutInMinutes": 0,
+						"condition": "succeededOrFailed()",
+						"task": {
+							"id": "2ff763a7-ce83-4e1f-bc89-0ae63477cebe",
+							"versionSpec": "1.*",
+							"definitionType": "task"
+						},
+						"inputs": {
+							"PathtoPublish": "Dockerfile",
+							"ArtifactName": "drop",
+							"ArtifactType": "Container",
+							"TargetPath": "",
+							"Parallel": "false",
+							"ParallelCount": "8"
+						}
+					}
+				],
+				"name": "Phase 1",
+				"refName": "Phase_1",
+				"condition": "succeeded()",
+				"target": {
+					"executionOptions": {
+						"type": 0
+					},
+					"allowScriptsAuthAccessOption": false,
+					"type": 1
+				},
+				"jobAuthorizationScope": 1,
+				"jobCancelTimeoutInMinutes": 1
+			}
+		],
+		"type": 1
+	},
+	"repository": {
+		"properties": {
+			"apiUrl": "https://api.github.com/repos/mpMelnikov/BuildTemplates",
+			"branchesUrl": "https://api.github.com/repos/mpMelnikov/BuildTemplates/branches",
+			"cloneUrl": "https://github.com/mpMelnikov/BuildTemplates.git",
+			"fullName": "mpMelnikov/BuildTemplates",
+			"manageUrl": "https://github.com/mpMelnikov/BuildTemplates",
+			"refsUrl": "https://api.github.com/repos/mpMelnikov/BuildTemplates/git/refs",
+			"defaultBranch": "master",
+			"connectedServiceId": "ad8f3ec1-5c5a-4fb3-8678-6d3a082549a1",
+			"isPrivate": "False",
+			"isFork": "False",
+			"ownerAvatarUrl": "https://avatars0.githubusercontent.com/u/7716624?v=4",
+			"lastUpdated": "10/09/2018 13:27:26",
+			"safeOwnerId": "B6209B756B64E1D46C9F1771F71C4E5AAFA5C3737538D7D39286E5F62E353032612E0BFC837B9B968FC3D2D070C3DA1B86C695AAD4F47A0E3C861EACA149",
+			"safeRepository": "BuildTemplates",
+			"ownerIsAUser": "True",
+			"checkoutNestedSubmodules": "false",
+			"cleanOptions": "0",
+			"fetchDepth": "0",
+			"gitLfsSupport": "false",
+			"reportBuildStatus": "false",
+			"skipSyncSource": "false",
+			"labelSourcesFormat": "$(build.buildNumber)",
+			"labelSources": "0"
+		},
+		"id": "mpMelnikov/BuildTemplates",
+		"type": "GitHub",
+		"name": "mpMelnikov/BuildTemplates",
+		"url": "https://github.com/mpMelnikov/BuildTemplates.git",
+		"defaultBranch": "master",
+		"clean": "false",
+		"checkoutSubmodules": false
+	},
+	"processParameters": {},
+	"quality": 1,
+	"authoredBy": {
+		"displayName": "Mikhail Melnikov (EPAM Systems Inc)",
+		"url": "https://vssps.dev.azure.com/e/Microsoft/_apis/Identities/a09c57b9-f25b-651c-92f3-4cd2ea36a720",
+		"_links": {
+			"avatar": {
+				"href": "https://ceapex.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.YTA5YzU3YjktZjI1Yi03NTFjLTkyZjMtNGNkMmVhMzZhNzIw"
+			}
+		},
+		"id": "a09c57b9-f25b-651c-92f3-4cd2ea36a720",
+		"uniqueName": "v-mimeln@microsoft.com",
+		"imageUrl": "https://ceapex.visualstudio.com/_api/_common/identityImage?id=a09c57b9-f25b-651c-92f3-4cd2ea36a720",
+		"descriptor": "aad.YTA5YzU3YjktZjI1Yi03NTFjLTkyZjMtNGNkMmVhMzZhNzIw"
+	},
+	"drafts": [],
+	"queue": {
+		"_links": {
+			"self": {
+				"href": "https://ceapex.visualstudio.com/_apis/build/Queues/124"
+			}
+		},
+		"id": 124,
+		"name": "Hosted Windows Container",
+		"url": "https://ceapex.visualstudio.com/_apis/build/Queues/124",
+		"pool": {
+			"id": 13,
+			"name": "Hosted Windows Container",
+			"isHosted": true
+		}
+	},
+	"id": 742,
+	"name": "custom_dockerfile_windows",
+	"url": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/742?revision=20",
+	"uri": "vstfs:///Build/Definition/742",
+	"path": "\\Constructors.Builds",
+	"type": 2,
+	"queueStatus": 0,
+	"revision": 20,
+	"createdDate": "2018-10-11T15:44:24.083Z",
+	"project": {
+		"id": "ae01eb1d-db75-4bba-aa0c-47accefe4f36",
+		"name": "Vendor Projects",
+		"description": "Projects allocated to vendors. No work in this area is done by the docs.microsoft.com engineering teams.",
+		"url": "https://ceapex.visualstudio.com/_apis/projects/ae01eb1d-db75-4bba-aa0c-47accefe4f36",
+		"state": 1,
+		"revision": 706,
+		"visibility": 1
+	}
+}
