@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "Node.Js check started"
 pwd
 ls
