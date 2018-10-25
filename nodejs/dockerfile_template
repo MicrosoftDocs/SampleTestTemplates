@@ -10,5 +10,8 @@ RUN git reset --hard {1}
 
 COPY nodejs/check_node_js.sh /usr/src
 
+node --check ./hw.js
+node --check ./hw2.js
+
 RUN chmod +x /usr/src/check_node_js.sh
 RUN /usr/src/check_node_js.sh
