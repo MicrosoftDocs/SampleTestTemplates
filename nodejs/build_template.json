@@ -25,14 +25,14 @@
 			"value": "master"
 		},
 		"CommitId": {
-			"value": "c328ac5861bbf8af8d6fcd949a964c6e97e43a0b",
+			"value": "2c82ef85e130208b8150ba720319fba30c0d490b",
 			"allowOverride": true
 		},
 		"GitRepo": {
-			"value": "mpMelnikov/TestRepository2"
+			"value": "mpMelnikov/test5"
 		},
 		"SolutionPath": {
-			"value": "NodeJS"
+			"value": "node"
 		},
 		"system.debug": {
 			"value": "false",
@@ -53,16 +53,16 @@
 	"tags": [],
 	"_links": {
 		"self": {
-			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/463?revision=20"
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/894?revision=5"
 		},
 		"web": {
-			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/definition?definitionId=463"
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/definition?definitionId=894"
 		},
 		"editor": {
-			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/designer?id=463&_a=edit-build-definition"
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/designer?id=894&_a=edit-build-definition"
 		},
 		"badge": {
-			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/status/463"
+			"href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/status/894"
 		}
 	},
 	"jobAuthorizationScope": 1,
@@ -91,6 +91,7 @@
 							"errorActionPreference": "continue",
 							"failOnStderr": "false",
 							"ignoreLASTEXITCODE": "false",
+							"pwsh": "false",
 							"workingDirectory": ""
 						}
 					}, {
@@ -113,7 +114,7 @@
 							"azureContainerRegistry": "",
 							"action": "Build an image",
 							"dockerFile": "**/Dockerfile",
-							"buildArguments": "",
+							"buildArguments": "--no-cache",
 							"defaultContext": "true",
 							"context": "",
 							"imageName": "$(Build.BuildId)",
@@ -144,52 +145,6 @@
 						"enabled": true,
 						"continueOnError": false,
 						"alwaysRun": true,
-						"displayName": "Run an image",
-						"timeoutInMinutes": 0,
-						"condition": "succeededOrFailed()",
-						"task": {
-							"id": "e28912f1-0114-4464-802a-a3a35437fd16",
-							"versionSpec": "0.*",
-							"definitionType": "task"
-						},
-						"inputs": {
-							"containerregistrytype": "Azure Container Registry",
-							"dockerRegistryEndpoint": "",
-							"azureSubscriptionEndpoint": "",
-							"azureContainerRegistry": "",
-							"action": "Run an image",
-							"dockerFile": "**/Dockerfile",
-							"buildArguments": "",
-							"defaultContext": "true",
-							"context": "",
-							"imageName": "$(Build.BuildId)",
-							"imageNamesPath": "",
-							"qualifyImageName": "true",
-							"additionalImageTags": "",
-							"includeSourceTags": "false",
-							"includeLatestTag": "false",
-							"imageDigestFile": "",
-							"containerName": "",
-							"ports": "",
-							"volumes": "",
-							"envVars": "",
-							"workDir": "",
-							"entrypoint": "",
-							"containerCommand": "",
-							"detached": "false",
-							"restartPolicy": "no",
-							"restartMaxRetries": "",
-							"customCommand": "",
-							"dockerHostEndpoint": "",
-							"enforceDockerNamingConvention": "true",
-							"cwd": "$(System.DefaultWorkingDirectory)",
-							"memory": ""
-						}
-					}, {
-						"environment": {},
-						"enabled": true,
-						"continueOnError": false,
-						"alwaysRun": true,
 						"displayName": "Copy Files to: $(Build.ArtifactStagingDirectory)/nodejs",
 						"timeoutInMinutes": 0,
 						"condition": "succeededOrFailed()",
@@ -200,7 +155,7 @@
 						},
 						"inputs": {
 							"SourceFolder": "nodejs",
-							"Contents": "Check-NodeJSScript.ps1",
+							"Contents": "check_node_js.sh",
 							"TargetFolder": "$(Build.ArtifactStagingDirectory)/nodejs",
 							"CleanTargetFolder": "false",
 							"OverWrite": "false",
@@ -279,7 +234,7 @@
 			"isPrivate": "False",
 			"isFork": "False",
 			"ownerAvatarUrl": "https://avatars2.githubusercontent.com/u/22479449?v=4",
-			"lastUpdated": "10/19/2018 13:46:13",
+			"lastUpdated": "10/25/2018 12:52:47",
 			"safeOwnerId": "22479449",
 			"safeOwnerName": "MicrosoftDocs",
 			"safeRepository": "MicrosoftDocs/SampleTestTemplates",
@@ -304,17 +259,17 @@
 	"processParameters": {},
 	"quality": 1,
 	"authoredBy": {
-		"displayName": "Dmitrii Komarchev",
-		"url": "https://vssps.dev.azure.com/e/Microsoft/_apis/Identities/abd31153-2afb-6b56-abfa-546a984b5c1f",
+		"displayName": "Mikhail Melnikov (EPAM Systems Inc)",
+		"url": "https://vssps.dev.azure.com/e/Microsoft/_apis/Identities/a09c57b9-f25b-651c-92f3-4cd2ea36a720",
 		"_links": {
 			"avatar": {
-				"href": "https://ceapex.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.YWJkMzExNTMtMmFmYi03YjU2LWFiZmEtNTQ2YTk4NGI1YzFm"
+				"href": "https://ceapex.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.YTA5YzU3YjktZjI1Yi03NTFjLTkyZjMtNGNkMmVhMzZhNzIw"
 			}
 		},
-		"id": "abd31153-2afb-6b56-abfa-546a984b5c1f",
-		"uniqueName": "v-dmkoma@microsoft.com",
-		"imageUrl": "https://ceapex.visualstudio.com/_api/_common/identityImage?id=abd31153-2afb-6b56-abfa-546a984b5c1f",
-		"descriptor": "aad.YWJkMzExNTMtMmFmYi03YjU2LWFiZmEtNTQ2YTk4NGI1YzFm"
+		"id": "a09c57b9-f25b-651c-92f3-4cd2ea36a720",
+		"uniqueName": "v-mimeln@microsoft.com",
+		"imageUrl": "https://ceapex.visualstudio.com/_api/_common/identityImage?id=a09c57b9-f25b-651c-92f3-4cd2ea36a720",
+		"descriptor": "aad.YTA5YzU3YjktZjI1Yi03NTFjLTkyZjMtNGNkMmVhMzZhNzIw"
 	},
 	"drafts": [],
 	"queue": {
@@ -332,22 +287,22 @@
 			"isHosted": true
 		}
 	},
-	"id": 463,
-	"name": "Vendor Projects-CI-NodeJS",
-	"url": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/463?revision=20",
-	"uri": "vstfs:///Build/Definition/463",
-	"path": "\\",
+	"id": 894,
+	"name": "some_sample_id6__nodejs_",
+	"url": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/894?revision=5",
+	"uri": "vstfs:///Build/Definition/894",
+	"path": "\\Constructors.Builds",
 	"type": 2,
 	"queueStatus": 0,
-	"revision": 20,
-	"createdDate": "2018-09-14T09:43:59.650Z",
+	"revision": 5,
+	"createdDate": "2018-10-25T12:56:08.647Z",
 	"project": {
 		"id": "ae01eb1d-db75-4bba-aa0c-47accefe4f36",
 		"name": "Vendor Projects",
 		"description": "Projects allocated to vendors. No work in this area is done by the docs.microsoft.com engineering teams.",
 		"url": "https://ceapex.visualstudio.com/_apis/projects/ae01eb1d-db75-4bba-aa0c-47accefe4f36",
 		"state": 1,
-		"revision": 217,
+		"revision": 706,
 		"visibility": 1
 	}
 }
