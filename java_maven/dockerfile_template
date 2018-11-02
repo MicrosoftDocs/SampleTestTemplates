@@ -23,6 +23,8 @@ RUN echo "starting code build"
 WORKDIR /app
 COPY --from=clone /app/repo /app
 
+{2}
+
 RUN pwd
 RUN ls
 
