@@ -1,0 +1,282 @@
+{
+  "options": [
+    {
+      "enabled": false,
+      "definition": {
+        "id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
+      },
+      "inputs": {
+        "branchFilters": "[\"+refs/heads/*\"]",
+        "additionalFields": "{}"
+      }
+    },
+    {
+      "enabled": false,
+      "definition": {
+        "id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+      },
+      "inputs": {
+        "workItemType": "1421774",
+        "assignToRequestor": "true",
+        "additionalFields": "{}"
+      }
+    }
+  ],
+  "variables": {
+    "Branch": {
+      "value": "master"
+    },
+    "BuildConfiguration": {
+      "value": "release",
+      "allowOverride": true
+    },
+    "BuildPlatform": {
+      "value": "any cpu",
+      "allowOverride": true
+    },
+    "CommitId": {
+      "value": "",
+      "allowOverride": true
+    },
+    "GitRepo": {
+      "value": "katebialiatka/DockerGradle"
+    },
+    "SolutionPath": {
+      "value": ""
+    }
+  },
+  "properties": {
+    
+  },
+  "tags": [
+    
+  ],
+  "_links": {
+    "self": {
+      "href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/1074?revision=3"
+    },
+    "web": {
+      "href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/definition?definitionId=1074"
+    },
+    "editor": {
+      "href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_build/designer?id=1074&_a=edit-build-definition"
+    },
+    "badge": {
+      "href": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/status/1074"
+    }
+  },
+  "jobAuthorizationScope": 1,
+  "jobCancelTimeoutInMinutes": 5,
+  "process": {
+    "phases": [
+      {
+        "steps": [
+          {
+            "environment": {
+              
+            },
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "Create Dockerfile",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+              "versionSpec": "2.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "targetType": "inline",
+              "filePath": "",
+              "arguments": "",
+              "script": "$output = \"Dockerfile\"\n$gitRepoUrl = \"https://github.com/$(GitRepo).git\"\n$trimmedSolutionPath = \"$(SolutionPath)\".TrimStart(\"/\")\n$workdirCommand = \"\"\nif ($trimmedSolutionPath)\n{\n    $workdirCommand = \"WORKDIR \" + $trimmedSolutionPath\n}\n\n$dockerfileContent = Get-Content java_gradle/dockerfile_template -Raw \n$dockerfileContent = $dockerfileContent -f $gitRepoUrl, \"$(CommitId)\", $workdirCommand\n\n$dockerfileContent | Out-File -filepath $output",
+              "errorActionPreference": "stop",
+              "failOnStderr": "false",
+              "ignoreLASTEXITCODE": "false",
+              "pwsh": "false",
+              "workingDirectory": ""
+            }
+          },
+          {
+            "environment": {
+              
+            },
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "Build an image",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "e28912f1-0114-4464-802a-a3a35437fd16",
+              "versionSpec": "0.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "containerregistrytype": "Azure Container Registry",
+              "dockerRegistryEndpoint": "",
+              "azureSubscriptionEndpoint": "",
+              "azureContainerRegistry": "",
+              "action": "Build an image",
+              "dockerFile": "**/Dockerfile",
+              "buildArguments": "",
+              "defaultContext": "true",
+              "context": "",
+              "imageName": "$(Build.BuildId)",
+              "imageNamesPath": "",
+              "qualifyImageName": "true",
+              "additionalImageTags": "",
+              "includeSourceTags": "false",
+              "includeLatestTag": "false",
+              "imageDigestFile": "",
+              "containerName": "",
+              "ports": "",
+              "volumes": "",
+              "envVars": "",
+              "workDir": "",
+              "entrypoint": "",
+              "containerCommand": "",
+              "detached": "true",
+              "restartPolicy": "no",
+              "restartMaxRetries": "",
+              "customCommand": "",
+              "dockerHostEndpoint": "",
+              "enforceDockerNamingConvention": "true",
+              "cwd": "$(System.DefaultWorkingDirectory)",
+              "memory": ""
+            }
+          },
+          {
+            "environment": {
+              
+            },
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": true,
+            "displayName": "Publish Artifact: drop",
+            "timeoutInMinutes": 0,
+            "condition": "succeededOrFailed()",
+            "task": {
+              "id": "2ff763a7-ce83-4e1f-bc89-0ae63477cebe",
+              "versionSpec": "1.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "PathtoPublish": "Dockerfile",
+              "ArtifactName": "drop",
+              "ArtifactType": "Container",
+              "TargetPath": "",
+              "Parallel": "false",
+              "ParallelCount": "8"
+            }
+          }
+        ],
+        "name": "Phase 1",
+        "refName": "Phase_1",
+        "condition": "succeeded()",
+        "target": {
+          "executionOptions": {
+            "type": 0
+          },
+          "allowScriptsAuthAccessOption": false,
+          "type": 1
+        },
+        "jobAuthorizationScope": 1,
+        "jobCancelTimeoutInMinutes": 1
+      }
+    ],
+    "type": 1
+  },
+  "repository": {
+    "properties": {
+      "apiUrl": "https://api.github.com/repos/MicrosoftDocs/SampleTestTemplates",
+      "branchesUrl": "https://api.github.com/repos/MicrosoftDocs/SampleTestTemplates/branches",
+      "cloneUrl": "https://github.com/MicrosoftDocs/SampleTestTemplates.git",
+      "fullName": "MicrosoftDocs/SampleTestTemplates",
+      "manageUrl": "https://github.com/MicrosoftDocs/SampleTestTemplates",
+      "refsUrl": "https://api.github.com/repos/MicrosoftDocs/SampleTestTemplates/git/refs",
+      "defaultBranch": "master",
+      "connectedServiceId": "ad8f3ec1-5c5a-4fb3-8678-6d3a082549a1",
+      "isPrivate": "False",
+      "isFork": "False",
+      "ownerAvatarUrl": "https://avatars2.githubusercontent.com/u/22479449?v=4",
+      "lastUpdated": "11/02/2018 14:43:54",
+      "nodeId": "MDEwOlJlcG9zaXRvcnkxNTIxNjA2MTM=",
+      "hasAdminPermissions": "True",
+      "safeOwnerId": "22479449",
+      "safeOwnerName": "MicrosoftDocs",
+      "safeRepository": "MicrosoftDocs/SampleTestTemplates",
+      "ownerIsAUser": "False",
+      "checkoutNestedSubmodules": "false",
+      "cleanOptions": "0",
+      "fetchDepth": "0",
+      "gitLfsSupport": "false",
+      "reportBuildStatus": "false",
+      "skipSyncSource": "false",
+      "labelSourcesFormat": "$(build.buildNumber)",
+      "labelSources": "0"
+    },
+    "id": "MicrosoftDocs/SampleTestTemplates",
+    "type": "GitHub",
+    "name": "MicrosoftDocs/SampleTestTemplates",
+    "url": "https://github.com/MicrosoftDocs/SampleTestTemplates.git",
+    "defaultBranch": "master",
+    "clean": "false",
+    "checkoutSubmodules": false
+  },
+  "processParameters": {
+    
+  },
+  "quality": 1,
+  "authoredBy": {
+    "displayName": "Katsiaryna Bialiatka (EPAM Systems Inc)",
+    "url": "https://vssps.dev.azure.com/e/Microsoft/_apis/Identities/810daced-df25-62e5-9d14-c357d7ed507f",
+    "_links": {
+      "avatar": {
+        "href": "https://ceapex.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.ODEwZGFjZWQtZGYyNS03MmU1LTlkMTQtYzM1N2Q3ZWQ1MDdm"
+      }
+    },
+    "id": "810daced-df25-62e5-9d14-c357d7ed507f",
+    "uniqueName": "v-kabial@microsoft.com",
+    "imageUrl": "https://ceapex.visualstudio.com/_api/_common/identityImage?id=810daced-df25-62e5-9d14-c357d7ed507f",
+    "descriptor": "aad.ODEwZGFjZWQtZGYyNS03MmU1LTlkMTQtYzM1N2Q3ZWQ1MDdm"
+  },
+  "drafts": [
+    
+  ],
+  "queue": {
+    "_links": {
+      "self": {
+        "href": "https://ceapex.visualstudio.com/_apis/build/Queues/37"
+      }
+    },
+    "id": 37,
+    "name": "Hosted Linux Preview",
+    "url": "https://ceapex.visualstudio.com/_apis/build/Queues/37",
+    "pool": {
+      "id": 3,
+      "name": "Hosted Linux Preview",
+      "isHosted": true
+    }
+  },
+  "id": 1074,
+  "name": "test_kate_gradle_build",
+  "url": "https://ceapex.visualstudio.com/ae01eb1d-db75-4bba-aa0c-47accefe4f36/_apis/build/Definitions/1074?revision=3",
+  "uri": "vstfs:///Build/Definition/1074",
+  "path": "\\Constructors.Builds",
+  "type": 2,
+  "queueStatus": 0,
+  "revision": 3,
+  "createdDate": "2018-11-19T12:04:01.097Z",
+  "project": {
+    "id": "ae01eb1d-db75-4bba-aa0c-47accefe4f36",
+    "name": "Vendor Projects",
+    "description": "Projects allocated to vendors. No work in this area is done by the docs.microsoft.com engineering teams.",
+    "url": "https://ceapex.visualstudio.com/_apis/projects/ae01eb1d-db75-4bba-aa0c-47accefe4f36",
+    "state": 1,
+    "revision": 706,
+    "visibility": 1,
+    "defaultTeamImageUrl": null
+  }
+}
