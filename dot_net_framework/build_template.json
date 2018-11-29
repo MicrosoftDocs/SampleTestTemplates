@@ -162,7 +162,7 @@
 						"alwaysRun": false,
 						"displayName": "Copy Files to:  $(Build.ArtifactStagingDirectory)/dot_net_framework",
 						"timeoutInMinutes": 0,
-						"condition": "succeeded()",
+						"condition": "succeededOrFailed()",
 						"task": {
 							"id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
 							"versionSpec": "2.*",
@@ -183,7 +183,7 @@
 						"alwaysRun": false,
 						"displayName": "Copy Files to: $(Build.ArtifactStagingDirectory) copy",
 						"timeoutInMinutes": 0,
-						"condition": "succeeded()",
+						"condition": "succeededOrFailed()",
 						"task": {
 							"id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
 							"versionSpec": "2.*",
@@ -204,7 +204,7 @@
 						"alwaysRun": false,
 						"displayName": "Publish Artifact: drop",
 						"timeoutInMinutes": 0,
-						"condition": "succeeded()",
+						"condition": "succeededOrFailed()",
 						"task": {
 							"id": "2ff763a7-ce83-4e1f-bc89-0ae63477cebe",
 							"versionSpec": "1.*",
