@@ -310,15 +310,15 @@
 	"queue": {
 		"_links": {
 			"self": {
-				"href": "https://ceapex.visualstudio.com/_apis/build/Queues/37"
+				"href": "https://ceapex.visualstudio.com/_apis/build/Queues/111"
 			}
 		},
-		"id": 37,
-		"name": "Hosted Linux Preview",
-		"url": "https://ceapex.visualstudio.com/_apis/build/Queues/37",
+		"id": 111,
+		"name": "Hosted Ubuntu 1604",
+		"url": "https://ceapex.visualstudio.com/_apis/build/Queues/111",
 		"pool": {
-			"id": 3,
-			"name": "Hosted Linux Preview",
+			"id": 12,
+			"name": "Hosted Ubuntu 1604",
 			"isHosted": true
 		}
 	},
